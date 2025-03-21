@@ -1,6 +1,7 @@
 /**
  * @file bfloat16_tests.cpp
  * @brief Test suite for bfloat16_t implementation using Catch2
+ * @author Narayan S(Vortex)
  */
 
 #include <catch2/catch_test_macros.hpp>
@@ -11,19 +12,18 @@
 #include <limits>
 
 using namespace bf16;
-using Catch::Matchers::WithinRel;
-using Catch::Matchers::WithinAbs;
 
-auto float_matcher(float expected) {
-	if (std::isnan(expected)) {
-		return WithinAbs(0.0f, 1.0f);
-	} else if (std::isinf(expected)) {
-		return WithinAbs(expected, 0.1f);
-	} else if (std::abs(expected) < 1e-5f) {
-		return WithinAbs(expected, 1e-3f);
-	} else {
-		return WithinRel(expected, 0.01f);
-	}
+using Catch::Matchers::WithinAbs;
+auto float_matcher(float expected) -> Catch::Matchers::WithinAbsMatcher {
+    if (std::isnan(expected)) {
+        return WithinAbs(0.0f, 1.0f);
+    } else if (std::isinf(expected)) {
+        return WithinAbs(expected, 0.1f);
+    } else if (std::abs(expected) < 1e-5f) {
+        return WithinAbs(expected, 1e-3f);
+    } else {
+        return WithinAbs(expected, std::abs(expected) * 0.01f);
+    }
 }
 
 bool is_nan(float value) {
@@ -297,7 +297,8 @@ TEST_CASE("BFloat16 Precision Loss", "[bfloat16][precision]") {
 		float back = static_cast<float>(bf_large);
 
 		// Ordering should be preserved for large values
-		REQUIRE((back > 0.0f && large_value > 0.0f) || (back < 0.0f && large_value < 0.0f));
+		REQUIRE(((back > 0.0f && large_value > 0.0f) || (back < 0.0f && large_value < 0.0f)));
+		/*REQUIRE((back > 0.0f && large_value > 0.0f) || (back < 0.0f && large_value < 0.0f));*/
 
 		// Order of magnitude should be close
 		double ratio = std::abs(back / large_value);
