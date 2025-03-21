@@ -11,15 +11,15 @@ include_directories(include)
 
 add_library(bfloat16 INTERFACE)
 target_include_directories(bfloat16 INTERFACE
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-    $<INSTALL_INTERFACE:include>
+	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+	$<INSTALL_INTERFACE:include>
 )
 
 include(FetchContent)
 FetchContent_Declare(
-    Catch2
-    GIT_REPOSITORY https://github.com/catchorg/Catch2.git
-    GIT_TAG v3.4.0
+	Catch2
+	GIT_REPOSITORY https://github.com/catchorg/Catch2.git
+	GIT_TAG v3.4.0
 )
 FetchContent_MakeAvailable(Catch2)
 
@@ -31,36 +31,48 @@ include(Catch)
 catch_discover_tests(bfloat16_tests)
 
 install(TARGETS bfloat16
-    EXPORT bfloat16-targets
-    LIBRARY DESTINATION lib
-    ARCHIVE DESTINATION lib
-    RUNTIME DESTINATION bin
-    INCLUDES DESTINATION include
+	EXPORT bfloat16-targets
+	LIBRARY DESTINATION lib
+	ARCHIVE DESTINATION lib
+	RUNTIME DESTINATION bin
+	INCLUDES DESTINATION include
 )
 
 install(DIRECTORY include/ DESTINATION include)
 
 install(EXPORT bfloat16-targets
-    FILE bfloat16-targets.cmake
-    NAMESPACE bfloat16::
-    DESTINATION lib/cmake/bfloat16
+	FILE bfloat16-targets.cmake
+	NAMESPACE bfloat16::
+	DESTINATION lib/cmake/bfloat16
 )
 
 include(CMakePackageConfigHelpers)
 configure_package_config_file(
-    ${CMAKE_CURRENT_SOURCE_DIR}/cmake/bfloat16-config.cmake.in
-    ${CMAKE_CURRENT_BINARY_DIR}/bfloat16-config.cmake
-    INSTALL_DESTINATION lib/cmake/bfloat16
+	${CMAKE_CURRENT_SOURCE_DIR}/cmake/bfloat16-config.cmake.in
+	${CMAKE_CURRENT_BINARY_DIR}/bfloat16-config.cmake
+	INSTALL_DESTINATION lib/cmake/bfloat16
 )
 
 write_basic_package_version_file(
-    ${CMAKE_CURRENT_BINARY_DIR}/bfloat16-config-version.cmake
-    VERSION ${PROJECT_VERSION}
-    COMPATIBILITY SameMajorVersion
+	${CMAKE_CURRENT_BINARY_DIR}/bfloat16-config-version.cmake
+	VERSION ${PROJECT_VERSION}
+	COMPATIBILITY SameMajorVersion
 )
 
 install(FILES
-    ${CMAKE_CURRENT_BINARY_DIR}/bfloat16-config.cmake
-    ${CMAKE_CURRENT_BINARY_DIR}/bfloat16-config-version.cmake
-    DESTINATION lib/cmake/bfloat16
+	${CMAKE_CURRENT_BINARY_DIR}/bfloat16-config.cmake
+	${CMAKE_CURRENT_BINARY_DIR}/bfloat16-config-version.cmake
+	DESTINATION lib/cmake/bfloat16
 )
+
+# option(BUILD_EXAMPLES "Build examples" ON)
+#
+# if(BUILD_EXAMPLES)
+# 	add_executable(bfloat16_basic_example examples/main.cpp)
+# 	target_link_libraries(bfloat16_basic_example PRIVATE bfloat16)
+#
+# 	set_target_properties(bfloat16_basic_example
+# 		PROPERTIES
+# 		RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/examples"
+# 	)
+# endif()
